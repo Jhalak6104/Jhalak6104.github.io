@@ -1,0 +1,259 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calendar, Building2, ChevronLeft, ChevronRight, History } from 'lucide-react';
+
+const experiences = [
+  {
+    title: "Cyber Security Intern",
+    company: "Tally Solutions Private Ltd.",
+    period: "Jul 2025 – Aug 2025",
+    description: "Conducted proactive threat hunting and vulnerability assessments to enhance the security posture of enterprise systems.",
+    achievements: [
+      "Threat hunting and vulnerability assessments on 15+ enterprise systems.",
+      "Developed incident response procedures per NIST and ISO 27001.",
+      "Performed SIEM analysis and documentation of 25+ security findings, reducing high-risk vulnerabilities."
+    ],
+    technologies: ["Vulnerability Assessment", "SIEM Analysis", "Threat Hunting", "Penetration testing", "NIST Fraemwork", "MITRE Framework", "ISO 27001", "GRC", "Infosec"]
+  },
+  {
+    title: "VAPT Intern",
+    company: "CYBITUDE TECH LLP",
+    period: "Mar 2025 – Apr 2025",
+    description: "Performed proactive threat hunting and incident response to reduce system vulnerability exposure.",
+    achievements: [
+      "Proactive threat hunting using Burp Suite and Nmap across 50+ systems.",
+      "Telemetry analysis per MITRE ATT&CK framework.",
+      "Incident response collaboration reducing vulnerability exposure by 40% and creating detection logic for a 30% security posture improvement."
+    ],
+    technologies: ["Burp Suite", "OwaspZAP", "Nmap", "MITRE ATT&CK", "Incident Response", "Sublist3r", "Subfinder", "Nuclei"]
+  },
+  {
+    title: "Organizer",
+    company: "Null Ghaziabad Chapter",
+    period: "Apr 2024 – Present",
+    description: "Organized and hosted cybersecurity meetups to build a strong community network with university and industry professionals.",
+    achievements: [
+      "Conducted 4 null-meetups hosting over 150+ attendees.",
+      "Built a strong network community with cyber security professionals."
+    ],
+    technologies: ["Community Building", "Event Management", "Networking"]
+  },
+  {
+    title: "General Secretary",
+    company: "KIET Alumni Engagement Cell",
+    period: "April 2023 – Present",
+    description: "Connecting and fostering relationships with our college alumni world wide.",
+    achievements: [
+      "Organized and facilitated regular meet-ups for over 200+ alumni",
+      "Cultivating a thriving alumni community that fosters mentorship, networking, and professional development"
+    ],
+    technologies: ["Hosting and Leadership", "Even Organising", "Community Building"]
+  },
+  {
+    title: "Coordinator",
+    company: "Cyber Peace Centre",
+    period: "Feb 2023 – Present",
+    description: "Mentored and guided a team of junior cybersecurity enthusiasts, fostering their skills through hands-on workshops.",
+    achievements: [
+      "Mentored a team of over 50+ junior cybersecurity enthusiasts.",
+      "Fostered skills through hands-on workshops and collaborative project development."
+    ],
+    technologies: ["Mentorship", "Training", "Project Development"]
+  },
+  {
+    title: "Organizer",
+    company: "PR &IR Relations",
+    period: "January 2023 – Present",
+    description: "Organised various college events, collaborating with faculty and people outside of college",
+    achievements: [
+      "Coordinated with 50+ students of various disciplines and background",
+      "Organize annual cultural and sports Inter-college fest involving multiple stakeholders, including students, faculty, and external vendors."
+    ],
+    technologies: ["Hospitality", "Organise", "Event Management"]
+  }
+];
+
+export function ExperienceSection() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0
+    })
+  };
+
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset: number, velocity: number) => {
+    return Math.abs(offset) * velocity;
+  };
+
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection);
+    setCurrentIndex((prevIndex) => {
+      let nextIndex = prevIndex + newDirection;
+      if (nextIndex < 0) nextIndex = experiences.length - 1;
+      if (nextIndex >= experiences.length) nextIndex = 0;
+      return nextIndex;
+    });
+  };
+
+  return (
+    <section id="experience" className="py-20 bg-[rgba(var(--bg-rgb),0.2)]">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className="container mx-auto px-4"
+      >
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-8 sm:mb-12 flex items-center gap-2 sm:gap-4">
+          <History className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500 flex-shrink-0" aria-hidden="true" />
+          <span className="truncate">cat ~/experience</span>
+        </h2>
+
+        <div className="w-full">
+          <div className="relative min-h-[400px] sm:h-[400px] overflow-hidden rounded-xl">
+            <AnimatePresence initial={false} custom={direction}>
+              <motion.div
+                key={currentIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: "spring", stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.2 }
+                }}
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = swipePower(offset.x, velocity.x);
+
+                  if (swipe < -swipeConfidenceThreshold) {
+                    paginate(1);
+                  } else if (swipe > swipeConfidenceThreshold) {
+                    paginate(-1);
+                  }
+                }}
+                className="absolute w-full h-full"
+              >
+                <div
+                  className={`h-full bg-[rgba(var(--bg-rgb),0.4)] rounded-xl p-4 sm:p-6 md:p-8 border ${
+                    currentIndex === 0
+                      ? 'border-blue-500 shadow-lg shadow-blue-500/50'
+                      : 'border-blue-500/20'
+                  } backdrop-blur-sm overflow-y-auto`}
+                >
+                  <div className="flex flex-col h-full">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                      <div className="flex items-center gap-2 text-blue-400 text-xs sm:text-sm">
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
+                        <span>{experiences[currentIndex].period}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-400 text-xs sm:text-sm">
+                        <Building2 className="w-3 h-3 sm:w-4 sm:h-4" aria-hidden="true" />
+                        <span>{experiences[currentIndex].company}</span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 text-[rgb(var(--text-rgb))] leading-tight">
+                      {experiences[currentIndex].title}
+                    </h3>
+
+                    <p className="text-gray-400 text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">
+                      {experiences[currentIndex].description}
+                    </p>
+
+                    <div className="space-y-2 mb-4 sm:mb-6 hidden sm:block">
+                      {experiences[currentIndex].achievements.map((achievement, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 * i }}
+                          className="flex items-center gap-2 text-xs sm:text-sm text-gray-300"
+                        >
+                          <span className="text-blue-500">→</span>
+                          {achievement}
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    <div className="mt-auto">
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                        {experiences[currentIndex].technologies.map((tech, i) => (
+                          <span
+                            key={i}
+                            className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-blue-500/10 text-blue-400"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between mt-4 sm:mt-6 px-2 sm:px-4">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => paginate(-1)}
+              className="p-1.5 sm:p-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+              aria-label="Previous experience"
+            >
+              <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6" aria-hidden="true" />
+            </motion.button>
+
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {experiences.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setDirection(index > currentIndex ? 1 : -1);
+                    setCurrentIndex(index);
+                  }}
+                  className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-colors ${
+                    index === currentIndex
+                      ? index === 0
+                        ? 'bg-blue-500'
+                        : 'bg-blue-500'
+                      : 'bg-blue-500/20'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => paginate(1)}
+              className="p-1.5 sm:p-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 hover:bg-blue-500/20 transition-colors"
+              aria-label="Next experience"
+            >
+              <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" aria-hidden="true" />
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
