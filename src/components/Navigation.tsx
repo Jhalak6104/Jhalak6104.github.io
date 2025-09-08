@@ -173,7 +173,7 @@ export const Navigation = memo(function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-[rgba(var(--bg-rgb),0.98)] backdrop-blur-lg z-50 lg:hidden"
+            className="fixed inset-0 bg-black/80 z-50 lg:hidden"
             onClick={() => setIsMenuOpen(false)}
           />
         )}
