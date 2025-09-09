@@ -15,6 +15,22 @@ export const Hero = memo(function Hero() {
     document.body.removeChild(link);
   };
 
+
+    // New function to handle Letter of Recommendation download
+  const handleDownloadLOR = () => {
+    const link = document.createElement('a');
+    link.href = '/assets/Jhalak_Jain_LOR.pdf';
+    link.download = 'Jhalak_Jain_LOR.pdf';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+
+
   const reduceMotion = useReducedMotion();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -132,16 +148,18 @@ export const Hero = memo(function Hero() {
                 <span>Download CV</span>
               </motion.button>
 
-              <motion.a
-                href="#about"
-                className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 transition-colors group text-sm sm:text-base"
-                whileHover={reduceMotion ? undefined : { y: 5 }}
-                transition={reduceMotion ? undefined : { duration: 0.3 }}
-                aria-label="Scroll to about section"
+
+              <motion.button
+                onClick={handleDownloadLOR}
+                className="cyber-button w-full sm:w-auto text-sm sm:text-base bg-blue-500/20"
+                whileHover={reduceMotion ? undefined : { scale: 1.02 }}
+                whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                aria-label="Download my Letter of Recommendation"
               >
-                <span>Learn more about me</span>
-                <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 group-hover:animate-bounce" aria-hidden="true" />
-              </motion.a>
+                <FileDown className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
+                <span>Download LOR</span>
+              </motion.button>
+
             </div>
           </motion.div>
 
